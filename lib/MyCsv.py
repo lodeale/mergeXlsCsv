@@ -5,7 +5,7 @@ class MyCsv(object):
 	_bodyCsv = []
 	_hFile = ''
 
-	def __init__(self, fileName)
+	def __init__(self, fileName):
 		self._hFile = csv.reader(open(fileName,'rb'))
 		self._generate()
 
