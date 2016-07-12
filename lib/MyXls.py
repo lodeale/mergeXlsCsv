@@ -11,10 +11,13 @@ class MyXls(object):
 		self._generate()
 	
 	def _generate(self):
-		for row in range(2, self._hSheet.max_row + 1):
-			cnpj = str(self._hSheet['M' + str(row)].value)
-			creditLine = int(self._hSheet['O' + str(row)].value)
-			self._bodyXLS.append([cnpj,creditLine])
+		for i in range(1, self._hSheet.max_row):
+			rows = []
+			for j in range(1, self._hSheet.max_column):
+				rows.append(self._hSheet.cell(row=i,column=j).value)
+			self._bodyXLS.append(rows)
 
-	def results(self):
-		return self.bodyXSL
+	def results(self,flag='body'):
+		if flag == 'header':
+			return self._bodyXLS.pop(0)
+		return self._bodyXLS

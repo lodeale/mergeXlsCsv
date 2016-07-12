@@ -1,7 +1,6 @@
 import csv
 
 class MyCsv(object):
-	_headerCsv = []
 	_bodyCsv = []
 	_hFile = ''
 
@@ -12,7 +11,8 @@ class MyCsv(object):
 	def _generate(self):
 		for index, row in enumerate(self._hFile):
 			self._bodyCsv.append(row)
-		self._headerCsv = self._bodyCsv.pop(0)
 
-	def results(self):
+	def results(self,flag='body'):
+		if flag == 'header':
+			return self._bodyCsv.pop(0)
 		return self._bodyCsv

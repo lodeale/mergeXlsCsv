@@ -4,10 +4,7 @@ import sys, getopt
 from lib.MyCsv import MyCsv
 from lib.generateSql import GenerateSql
 from lib.MyXls import MyXls
-
-fileName1 = ''
-fileName2 = ''
-sheetName = ''
+from lib.Merge import Merge
 
 def main (argv):
 	fileName1 = ''
@@ -29,11 +26,12 @@ def main (argv):
 		elif opt in ("-s", "--sheetName"):
 			sheetName = arg
 	
-	res = MyCsv(fileName1)
+	cvs = MyCsv(fileName1)
 	xls = MyXls(fileName2,sheetName)
+	merge = Merge(cvs.results(), xls.results(), ['ECREDIT_LINE_ID','CD_CTA_CORRENTE'],['CNPJ','ECREDIT_LINE_ID','CURRENCY','CAPPING_AMOUNT','RUNNING_AMOUNT','STATUS'])
 
-	print res.results()
-	print xls.results()
+	#print cvs.results()
+	#print xls.results()
 
 
 if __name__ == "__main__":
