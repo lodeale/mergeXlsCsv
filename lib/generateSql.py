@@ -1,16 +1,21 @@
 class GenerateSql(object):
-	insertStr = "INSERT INTO %s VALUES "
-	tableName = 'table.empresa'
-	insertList = []
+	_insertStr = "INSERT INTO %s VALUES "
+	_tableName = 'table.test'
+	_insertList = []
 
-	def make(self,values):
+	def __init__(self,tableName):
+		self._tableName = tableName
+		self._make()
+
+	def _make(self,values):
 		for row in values:
 			start = '('
 			end = ');'
 			value = ''
 			for field in row:
-				#value = value + "\'" + str(field) + "\'" + ','
 				value = value + str(field) + ','
-			sqlComplet = self.insertStr + start + value[0:-1] + end
-			self.insertList.append(sqlComplet)
-			print sqlComplet
+			sqlComplet = self._insertStr + start + value[0:-1] + end
+			self._insertList.append(sqlComplet)
+
+	def results(self):
+		return self._insertList
