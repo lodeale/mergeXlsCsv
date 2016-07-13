@@ -5,9 +5,10 @@ class Merge(object):
 	_arrayTwo = []
 	_arrayOneHeader = []
 	_arrayTwoHeader = []
-	_idArray = []
 	_arrayNameField = []
+	_arrayCompleted = []
 	_merged = []
+	_idArray = []
 
 	def __init__(self, arrayOne, arrayTwo, idData, arrayNameField):
 		self._arrayOne = arrayOne
@@ -18,33 +19,29 @@ class Merge(object):
 		self._arrayNameField = arrayNameField
 		self._merge()
 	def _merge(self):
-		print self._idArray,"alskjdflaskjd: ", self._arrayOneHeader, self._arrayTwoHeader
 		indexOne = self._arrayOneHeader.index(self._idArray[0])
 		indexTwo = self._arrayTwoHeader.index(self._idArray[1])
-		rowNew = []
 		
 		for rowOne in self._arrayOne:
 			for rowTwo in self._arrayTwo:
+				"""Error porque hay string con \n\r en el excel """
 				try:
 					if ( int(rowOne[indexOne]) == int(rowTwo[indexTwo]) ):
-						#print "Son iguales: ", rowOne[indexOne],int(rowTwo[indexTwo])
-						try:
-							for pepe in self._arrayNameField:
-								if ( self._arrayOneHeader.index(pepe) ):
-									i = self._arrayOneHeader.index(pepe)
-									print "alksdjf",i
-									rowNew.append(rowOne[i])
-								elif ( self._arrayTwoHeader.index(pepe)):
-									i = self._arrayTwoHeader.index(pepe)
-									print "else", i
-									rowNew.append(rowTwo[i])
-								else:
-									print "Fuck"
-						except:
-							print "for fuck"
-						print rowNew
-
-				except:
+						rowNew = []
+						for field in self._arrayNameField:
+							if ( field in self._arrayOneHeader ):
+								i = self._arrayOneHeader.index(field)
+								rowNew.append(rowOne[i])
+							elif ( field in self._arrayTwoHeader):
+								i = self._arrayTwoHeader.index(field)
+								rowNew.append(rowTwo[i])
+						self._arrayCompleted.append(rowNew)
+				except Exception as e:
 					pass
+					#print "Error: ",e
+	def results(self):
+		return self._arrayCompleted
+	def count(self):
+		return len(self._arrayCompleted)
 
 		

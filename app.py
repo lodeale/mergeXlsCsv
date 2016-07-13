@@ -29,7 +29,9 @@ def main (argv):
 	cvs = MyCsv(fileName1)
 	xls = MyXls(fileName2,sheetName)
 	merge = Merge(cvs.results(), xls.results(), ['ECREDIT_LINE_ID','CD_CTA_CORRENTE'],['CNPJ','ECREDIT_LINE_ID','CURRENCY','CAPPING_AMOUNT','RUNNING_AMOUNT','STATUS'])
-
+	sql = GenerateSql("empresa.test",merge.results())
+	for row in sql.results():
+		print row,"\n\n"
 	#print cvs.results()
 	#print xls.results()
 
