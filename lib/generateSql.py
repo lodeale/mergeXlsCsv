@@ -14,7 +14,7 @@ class GenerateSql(object):
 			end = ');'
 			value = ''
 			for field in row:
-				value = value + str(field) + ','
+				value = value + "'" + str(field) + "'" + ","
 			sqlComplet = self._insertStr + self._tableName + self._insertStrValues + start + value[0:-1] + end
 			self._insertList.append(sqlComplet)
 
