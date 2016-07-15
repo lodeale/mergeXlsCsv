@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- encoding: utf-8 -*-
 import sys, getopt
+from termcolor import colored
+
 
 from lib.MyCsv import MyCsv
 from lib.generateSql import GenerateSql
@@ -10,27 +12,60 @@ from lib.Merge import Merge
 def main (argv):
 	fileName1 = ''
 	fileName2 = ''
-	sheetName = ''
+	sheetName1 = ''
+	sheetName2 = ''
+	commonFields = ''
+	fieldKeep = ''
+	sqlFields = ''
+
 	try:
-		opts, args = getopt.getopt(argv,"ha:b:s:",["fileName1=","fileName2=", "sheetName="])
+		opts, args = getopt.getopt(argv,"h:'W1':'S1':'W2':'S2':'F':",["fileName1=","fileName2=", "sheetName=", "sheetName2=", "config="])
 	except getopt.GetoptError:
-		print 'app.py -a <inputfile1> -b <inputfile2> -s <sheetName>'
+		print 'app.py -W1 <inputfile1> -S1 <sheetName1> -W2 <inputfile2> -S2 <sheetName2> -F ->use ConfigFile "./conf/conf.conf"'
 		sys.exit(2)
 	for opt, arg in opts:
 		if opt == '-h':
-			print 'app.py -f1 <inputfile1> -f2 <inputfile2> -s <sheetName>'
+			print 'app.py -F1 <inputfile1> -S1 <sheetName1> -F2 <inputfile2> -S2 <sheetName2> -F ->use ConfigFile "./conf/conf.conf"'
 			sys.exit()
-		elif opt in ("-a", "--fileName1"):
+		elif opt =='-F':
+			config=open('./conf/conf.conf')
+			for row in config:
+				if (row.startswith('PATH_FILE_1=') != 0):
+					fileName1 = (row[12:]).rstrip('\n')
+					print fileName2
+				elif (row.startswith('SHEET_NAME_1=') != 0):
+					sheetName1 = (row[13:]).rstrip('\n')
+					print sheetName1
+				elif (row.startswith('PATH_FILE_2=') != 0):
+					fileName2 = (row[12:]).rstrip('\n')
+					print fileName2
+				elif (row.startswith('SHEET_NAME_2=') != 0):
+					sheetName2 = (row[13:]).rstrip('\n')
+					print sheetName2
+				elif (row.startswith('COMMON_FIELDS=') != 0):
+					row = (row[15:(len(row)-1)]).rstrip('\n')
+					commonFields=row.split(',')
+				elif (row.startswith('FIELDS_TO_KEEP=') != 0):
+					row = (row[15:(len(row)-1)]).rstrip('\n')
+					fieldKeep=row.split(',')
+				elif (row.startswith('SQL_FIELDS=') != 0):
+					row = (row[12:(len(row)-1)]).rstrip('\n')
+					sqlFields=row.split(',')
+			break
+		elif opt in ("-W1", "--fileName1"):
 			fileName1 = arg
-		elif opt in ("-b", "--fileName2"):
+		elif opt in ("-W2", "--fileName2"):
 			fileName2 = arg
-		elif opt in ("-s", "--sheetName"):
-			sheetName = arg
-	
+		elif opt in ("-S1", "--sheetName"):
+			sheetName2 = arg
+		elif opt in ("-S2", "--sheetName"):
+			sheetName1 = arg
+
+	cabecera()	
 	print "\n[+] Procesando File 1"
 	cvs = MyCsv(fileName1)
 	print "\n[+] Procesando File 2"
-	xls = MyXls(fileName2,sheetName)
+	xls = MyXls(fileName2,sheetName2)
 	print "\n[+] Generando Merge con ambos archivos"
 	merge = Merge(cvs.results(), xls.results(), ['ECREDIT_LINE_ID','CD_CTA_CORRENTE'],['CNPJ','ECREDIT_LINE_ID','CURRENCY','CAPPING_AMOUNT','RUNNING_AMOUNT','STATUS'])
 	print "\n[+] Generando SQL"
@@ -45,14 +80,14 @@ def main (argv):
 	print "Cantidad registros: ", xls.counts()
 	print "Cantidad de errores: ", xls.errorsCount()
 
+def cabecera():
+	print """ \x1b[32m\n\n
 
-
-if __name__ == "__main__":
-	print """\n\n
 		################
 		#  SamanaBee   #
 		################
 		\n\n
+	 
 	________$$$$$$$$$$________ 
 	_____d$$$$$$$$$$$$$b______ 
 	_____$$$$$$$$$$$$$$$$_____ 
@@ -70,18 +105,20 @@ if __name__ == "__main__":
 	_________"$$$$$$"_________
 	__________^$$$$___________ 
 	_4$$c_______""_______.$$r_ 
-	_^$$$b____Samana____e$$$"_
+	_^$$$b____\x1b[0m\x1b[31mSamana\x1b[0m\x1b[32m____e$$$"_
 	_d$$$$$e__________z$$$$$b_ 
 	4$$$*$$$$$c____.$$$$$*$$$r 
 	_""____^*$$$be$$$*"____^"_ 
-	_Romeo____"$$$$"___Delta__
+	_\x1b[0m\x1b[31mRomeo\x1b[0m\x1b[32m____"$$$$"___\x1b[0m\x1b[31mDelta\x1b[0m\x1b[32m__
 	________.d$$P$$$b_________ 
 	_______d$$P___^$$$b_______ 
 	___.ed$$$"______"$$$be.___ 
-	_$$$$$$P___BEE____*$$$$$$_ 
+	_$$$$$$P___\x1b[0m\x1b[31mBEE\x1b[0m\x1b[32m____*$$$$$$_ 
 	4$$$$$P____________$$$$$$" 
 	_"*$$$"____________^$$P___
-	____""______________^"____
+	____""______________^"____\x1b[0m
 	"""
-   
+
+if __name__ == "__main__":
+	  
 	main(sys.argv[1:])

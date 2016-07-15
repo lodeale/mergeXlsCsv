@@ -18,7 +18,9 @@ class Merge(object):
 		self._idArray = idData
 		self._arrayNameField = arrayNameField
 		self._merge()
+
 	def _merge(self):
+		#print "header1=> ",self._arrayOneHeader
 		indexOne = self._arrayOneHeader.index(self._idArray[0])
 		indexTwo = self._arrayTwoHeader.index(self._idArray[1])
 		
