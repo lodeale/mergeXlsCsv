@@ -1,4 +1,5 @@
 import itertools
+from Validate import Validate
 
 class Merge(object):
 	_arrayOne = []
@@ -20,15 +21,17 @@ class Merge(object):
 		self._merge()
 
 	def _merge(self):
-		#print "header1=> ",self._arrayOneHeader
+		v = Validate()
+		self._arrayOneHeader = v.clean(self._arrayOneHeader)
 		indexOne = self._arrayOneHeader.index(self._idArray[0])
 		indexTwo = self._arrayTwoHeader.index(self._idArray[1])
-		
-		for rowOne in self._arrayOne:
-			for rowTwo in self._arrayTwo:
-				"""Error porque hay string con \n\r en el excel """
+		cleanArrayOne = v.clean(self._arrayOne)
+		cleanArrayTwo = v.clean(self._arrayTwo)
+
+		for rowOne in cleanArrayOne:
+			for rowTwo in cleanArrayTwo:
 				try:
-					if ( int(rowOne[indexOne]) == int(rowTwo[indexTwo]) ):
+					if ( rowOne and rowTwo and rowOne != '' and rowTwo != '' and (int(rowOne[indexOne]) == int(rowTwo[indexTwo])) ):
 						rowNew = []
 						for field in self._arrayNameField:
 							if ( field in self._arrayOneHeader ):
@@ -38,9 +41,11 @@ class Merge(object):
 								i = self._arrayTwoHeader.index(field)
 								rowNew.append(rowTwo[i])
 						self._arrayCompleted.append(rowNew)
+					else:
+						pass
 				except Exception as e:
-					pass
-					#print "Error: ",e
+					print "Error: ",e
+					
 	def results(self):
 		return self._arrayCompleted
 	def count(self):

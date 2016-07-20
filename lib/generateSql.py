@@ -10,7 +10,7 @@ class GenerateSql(object):
 
 	def _make(self,values):
 		for row in values:
-			start = '('
+			start = '(null,'
 			end = ');'
 			value = ''
 			for field in row:

@@ -2,6 +2,7 @@
 # -*- encoding: utf-8 -*-
 import sys, getopt
 from termcolor import colored
+import os
 
 
 from lib.MyCsv import MyCsv
@@ -67,10 +68,11 @@ def main (argv):
 	print "\n[+] Procesando File 2"
 	xls = MyXls(fileName2,sheetName2)
 	print "\n[+] Generando Merge con ambos archivos"
-	merge = Merge(cvs.results(), xls.results(), ['ECREDIT_LINE_ID','CD_CTA_CORRENTE'],['CNPJ','ECREDIT_LINE_ID','CURRENCY','CAPPING_AMOUNT','RUNNING_AMOUNT','STATUS'])
+	merge = Merge(cvs.results(), xls.results(), commonFields, fieldKeep)
 	print "\n[+] Generando SQL"
-	sql = GenerateSql("empresa.test",merge.results())
+	sql = GenerateSql("empresas.linea_credito_empresas_brasil",merge.results())
 	print "\n[+] Creando archivo /tmp/DBChange.sql"
+	os.remove('/tmp/DBChange.sql')
 	fileO = open('/tmp/DBChange.sql','a')
 	for row in sql.results():
 		fileO.write(str(row) + "\n")
@@ -84,7 +86,7 @@ def cabecera():
 	print """ \x1b[32m\n\n
 
 		################
-		#  SamanaBee   #
+		# SamanaBeeLeo #
 		################
 		\n\n
 	 
@@ -114,7 +116,7 @@ def cabecera():
 	_______d$$P___^$$$b_______ 
 	___.ed$$$"______"$$$be.___ 
 	_$$$$$$P___\x1b[0m\x1b[31mBEE\x1b[0m\x1b[32m____*$$$$$$_ 
-	4$$$$$P____________$$$$$$" 
+	4$$$$$P____\x1b[0m\x1b[31mLEO\x1b[0m\x1b[32m____$$$$$$" 
 	_"*$$$"____________^$$P___
 	____""______________^"____\x1b[0m
 	"""
