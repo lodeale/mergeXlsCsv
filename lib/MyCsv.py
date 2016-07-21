@@ -16,3 +16,5 @@ class MyCsv(object):
 		if flag == 'header':
 			return self._bodyCsv.pop(0)
 		return self._bodyCsv
+	def counts(self):
+		return len(self._bodyCsv)

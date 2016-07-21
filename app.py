@@ -63,24 +63,51 @@ def main (argv):
 			sheetName1 = arg
 
 	cabecera()	
+	format1 = fileName1.split('.')[-1]
+	format2 = fileName2.split('.')[-1]
+	arrayFile1 = []
+	arrayFile2 = []
 	print "\n[+] Procesando File 1"
-	cvs = MyCsv(fileName1)
+	try:
+		if ( format1.lower() == "xls" or format1.lower() == "xlsx"):
+			arrayFile1 = MyXls(fileName1,sheetName1)
+		elif ( format1.lower() == "csv" ):
+			arrayFile1 = MyCsv(fileName1)
+		else:
+			print "\n No se reconoce el formato del archivo 1."
+	except Exception, e:
+		print "\nError Archivo 1: ", e
+
 	print "\n[+] Procesando File 2"
-	xls = MyXls(fileName2,sheetName2)
+	try:
+		if ( format2.lower() == "xls" or format2.lower() == "xlsx"):
+			arrayFile2 = MyXls(fileName2,sheetName2)
+		elif ( format2.lower() == "csv"):
+			arrayFile2 = MyCsv(fileName2)
+		else:
+			print "\n No se reconoce el formato del archivo 2."
+	except Exception, e:
+		print "\nError Archivo 2: ", e
+
 	print "\n[+] Generando Merge con ambos archivos"
-	merge = Merge(cvs.results(), xls.results(), commonFields, fieldKeep)
+	merge = Merge(arrayFile1.results(), arrayFile2.results(), commonFields, fieldKeep)
+	
 	print "\n[+] Generando SQL"
 	sql = GenerateSql("empresas.linea_credito_empresas_brasil",merge.results())
+
 	print "\n[+] Creando archivo /tmp/DBChange.sql"
-	os.remove('/tmp/DBChange.sql')
+	if ( os.path.exists('/tmp/DBChange.sql') ):
+		os.remove('/tmp/DBChange.sql')
 	fileO = open('/tmp/DBChange.sql','a')
+	
+	print "\n[+] Escribiendo los inserts"
 	for row in sql.results():
 		fileO.write(str(row) + "\n")
 	fileO.close()
 	print "\n[+] Fin de la creación."
 
-	print "Cantidad registros: ", xls.counts()
-	print "Cantidad de errores: ", xls.errorsCount()
+	print "Cantidad registros: ", arrayFile2.counts() + arrayFile1.counts()
+	print "Cantidad de errores: ", arrayFile2.errorsCount() + arrayFile1.errorsCount()
 
 def cabecera():
 	print """ \x1b[32m\n\n
