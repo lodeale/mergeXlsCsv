@@ -18,3 +18,5 @@ class MyCsv(object):
 		return self._bodyCsv
 	def counts(self):
 		return len(self._bodyCsv)
+	def errorsCount(self):
+		return 0

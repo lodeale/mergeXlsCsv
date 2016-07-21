@@ -62,7 +62,8 @@ def main (argv):
 		elif opt in ("-S2", "--sheetName"):
 			sheetName1 = arg
 
-	cabecera()	
+	cabecera()
+
 	format1 = fileName1.split('.')[-1]
 	format2 = fileName2.split('.')[-1]
 	arrayFile1 = []
@@ -89,11 +90,18 @@ def main (argv):
 	except Exception, e:
 		print "\nError Archivo 2: ", e
 
-	print "\n[+] Generando Merge con ambos archivos"
-	merge = Merge(arrayFile1.results(), arrayFile2.results(), commonFields, fieldKeep)
-	
+	if ( arrayFile1 ):
+		if ( arrayFile2 ):
+			print "\n[+] Generando Merge con ambos archivos"
+			merge = Merge(arrayFile1.results(), arrayFile2.results(), commonFields, fieldKeep)
+			merge = merge.results()
+		else:
+			merge = arrayFile1.results()
+	else:
+		print "\n[+]No agrego ningún archivo."
+
 	print "\n[+] Generando SQL"
-	sql = GenerateSql("empresas.linea_credito_empresas_brasil",merge.results())
+	sql = GenerateSql("empresas_brasil.linea_credito_empresas_brasil",sqlFields,merge)
 
 	print "\n[+] Creando archivo /tmp/DBChange.sql"
 	if ( os.path.exists('/tmp/DBChange.sql') ):
@@ -105,9 +113,6 @@ def main (argv):
 		fileO.write(str(row) + "\n")
 	fileO.close()
 	print "\n[+] Fin de la creación."
-
-	print "Cantidad registros: ", arrayFile2.counts() + arrayFile1.counts()
-	print "Cantidad de errores: ", arrayFile2.errorsCount() + arrayFile1.errorsCount()
 
 def cabecera():
 	print """ \x1b[32m\n\n
